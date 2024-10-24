@@ -33,7 +33,7 @@ const TimeTable = () => {
       alert('Please enter at least one subject.');
       return;
     }
-
+    
     const subjectsArray = subjects.split(',').map(s => s.trim());
 
     if (classType === 'lab') {
@@ -65,10 +65,10 @@ const TimeTable = () => {
       alert('Please add at least one teacher before generating the timetable.');
       return;
     }
-
+  
     const newTimetable = {};
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
+  
     daysOfWeek.forEach(day => {
       newTimetable[day] = {
         '9:00 AM': null,
@@ -80,12 +80,48 @@ const TimeTable = () => {
         '3:00 PM': null,
       };
     });
-
-    // Existing logic for filling the timetable...
-
+  
+    // Filling the timetable with teachers' data
+    teachers.forEach(teacher => {
+      if (teacher.classType === 'subject') {
+        // Schedule subjects based on availability
+        teacher.availability.forEach(day => {
+          const daySchedule = newTimetable[day];
+  
+          // Find the first available time slot and assign the subject
+          for (let time in daySchedule) {
+            if (!daySchedule[time]) {
+              daySchedule[time] = {
+                teacher: teacher.name,
+                subject: teacher.subjects[0] // You can assign subjects in a rotating manner if needed
+              };
+              break;
+            }
+          }
+        });
+      } else if (teacher.classType === 'lab') {
+        // Schedule lab for the specific day
+        const labDaySchedule = newTimetable[teacher.labDetails.labDay];
+  
+        // Assign lab hours in a block (e.g., 2 or 3 hours)
+        let assignedHours = 0;
+        for (let time in labDaySchedule) {
+          if (!labDaySchedule[time] && assignedHours < teacher.labDetails.labHours) {
+            labDaySchedule[time] = {
+              teacher: teacher.name,
+              subject: 'Lab'
+            };
+            assignedHours++;
+          }
+          if (assignedHours === teacher.labDetails.labHours) {
+            break;
+          }
+        }
+      }
+    });
+  
     setTimetable(newTimetable);
   };
-
   const downloadTimetable = () => {
     const timetableElement = document.getElementById('timetable');
     
