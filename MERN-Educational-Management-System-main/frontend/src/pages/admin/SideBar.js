@@ -10,6 +10,7 @@ import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import ClassOutlinedIcon from '@mui/icons-material/ClassOutlined';
 import SupervisorAccountOutlinedIcon from '@mui/icons-material/SupervisorAccountOutlined';
 import ReportIcon from '@mui/icons-material/Report';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
 const SideBar = () => {
@@ -58,6 +59,12 @@ const SideBar = () => {
                         <ReportIcon color={location.pathname.startsWith("/Admin/complains") ? 'primary' : 'inherit'} />
                     </ListItemIcon>
                     <ListItemText primary="Complains" />
+                </ListItemButton>
+                <ListItemButton component={Link} to="/Admin/timetable">
+                    <ListItemIcon>
+                        <ScheduleIcon color={location.pathname.startsWith("/Admin/timetable") ? 'primary' : 'inherit'} />
+                    </ListItemIcon>
+                    <ListItemText primary="timetable" />
                 </ListItemButton>
             </React.Fragment>
             <Divider sx={{ my: 1 }} />

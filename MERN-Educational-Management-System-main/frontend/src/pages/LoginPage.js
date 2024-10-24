@@ -18,7 +18,7 @@ const LoginPage = ({ role }) => {
     const navigate = useNavigate()
 
     const { status, currentUser, response, error, currentRole } = useSelector(state => state.user);;
-
+    
     const [toggle, setToggle] = useState(false)
     const [guestLoader, setGuestLoader] = useState(false)
     const [loader, setLoader] = useState(false)

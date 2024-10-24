@@ -41,7 +41,7 @@ import AddClass from './classRelated/AddClass';
 import ClassDetails from './classRelated/ClassDetails';
 import ShowClasses from './classRelated/ShowClasses';
 import AccountMenu from '../../components/AccountMenu';
-
+import TimeTable from './timeTableRelated/TimeTable';
 const AdminDashboard = () => {
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
@@ -133,7 +133,8 @@ const AdminDashboard = () => {
                         <Route path="/Admin/teachers/choosesubject/:id" element={<ChooseSubject situation="Norm" />} />
                         <Route path="/Admin/teachers/choosesubject/:classID/:teacherID" element={<ChooseSubject situation="Teacher" />} />
                         <Route path="/Admin/teachers/addteacher/:id" element={<AddTeacher />} />
-
+                        {/*Time Table*/}
+                        <Route path="/Admin/timetable" element={<TimeTable/>}/>
                         <Route path="/logout" element={<Logout />} />
                     </Routes>
                 </Box>
