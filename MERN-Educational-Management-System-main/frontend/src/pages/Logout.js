@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 const Logout = () => {
     const currentUser = useSelector(state => state.user.currentUser);
-
+    
     const navigate = useNavigate();
     const dispatch = useDispatch();
 

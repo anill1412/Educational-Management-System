@@ -34,11 +34,11 @@ const StudentSubjects = () => {
     }, [userDetails])
 
     useEffect(() => {
-        if (subjectMarks === []) {
+        if (subjectMarks == []) {
             dispatch(getSubjectList(currentUser.sclassName._id, "ClassSubjects"));
         }
     }, [subjectMarks, dispatch, currentUser.sclassName._id]);
-
+    
     const handleSectionChange = (event, newSection) => {
         setSelectedSection(newSection);
     };

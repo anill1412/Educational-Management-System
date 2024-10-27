@@ -23,7 +23,6 @@ const TimeTable = () => {
   };
 
   const addTeacher = () => {
-    // Validation checks for empty fields
     if (!teacherName.trim()) {
       alert('Please enter the teacher name.');
       return;
@@ -33,7 +32,7 @@ const TimeTable = () => {
       alert('Please enter at least one subject.');
       return;
     }
-    
+
     const subjectsArray = subjects.split(',').map(s => s.trim());
 
     if (classType === 'lab') {
@@ -65,71 +64,85 @@ const TimeTable = () => {
       alert('Please add at least one teacher before generating the timetable.');
       return;
     }
-  
+
     const newTimetable = {};
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  
+
     daysOfWeek.forEach(day => {
       newTimetable[day] = {
         '9:00 AM': null,
         '10:00 AM': null,
         '11:00 AM': null,
-        '12:00 PM': null,
+        '12:00 PM': 'Lunch',
         '1:00 PM': null,
         '2:00 PM': null,
         '3:00 PM': null,
       };
     });
-  
-    // Filling the timetable with teachers' data
+
     teachers.forEach(teacher => {
-      if (teacher.classType === 'subject') {
-        // Schedule subjects based on availability
-        teacher.availability.forEach(day => {
-          const daySchedule = newTimetable[day];
-  
-          // Find the first available time slot and assign the subject
-          for (let time in daySchedule) {
-            if (!daySchedule[time]) {
-              daySchedule[time] = {
-                teacher: teacher.name,
-                subject: teacher.subjects[0] // You can assign subjects in a rotating manner if needed
-              };
-              break;
+      if (teacher.classType === 'lab') {
+        const day = teacher.labDetails.labDay;
+        const hours = teacher.labDetails.labHours;
+
+        let time = 9;
+        let slotsAllocated = 0;
+        while (slotsAllocated < hours && time < 12) {
+          const timeSlot = `${time}:00 AM`;
+          if (newTimetable[day][timeSlot] === null) {
+            newTimetable[day][timeSlot] = {
+              teacher: teacher.name,
+              subject: teacher.subjects.join(', '),
+              colSpan: hours
+            };
+            slotsAllocated = hours;
+            for (let i = 1; i < hours; i++) {
+              newTimetable[day][`${time + i}:00 AM`] = 'occupied';
             }
           }
-        });
-      } else if (teacher.classType === 'lab') {
-        // Schedule lab for the specific day
-        const labDaySchedule = newTimetable[teacher.labDetails.labDay];
-  
-        // Assign lab hours in a block (e.g., 2 or 3 hours)
-        let assignedHours = 0;
-        for (let time in labDaySchedule) {
-          if (!labDaySchedule[time] && assignedHours < teacher.labDetails.labHours) {
-            labDaySchedule[time] = {
-              teacher: teacher.name,
-              subject: 'Lab'
-            };
-            assignedHours++;
-          }
-          if (assignedHours === teacher.labDetails.labHours) {
-            break;
-          }
+          time++;
         }
+      } else {
+        teacher.availability.forEach(day => {
+          const availableTimes = Object.keys(newTimetable[day])
+            .filter(time => newTimetable[day][time] === null && time !== '12:00 PM')
+            .sort(() => Math.random() - 0.5);
+
+          if (availableTimes.length > 0) {
+            const time = availableTimes[0];
+            newTimetable[day][time] = { teacher: teacher.name, subject: teacher.subjects.join(', ') };
+          }
+        });
       }
     });
-  
+
+    daysOfWeek.forEach(day => {
+      let sportsAdded = false;
+
+      Object.keys(newTimetable[day]).forEach(time => {
+        if (newTimetable[day][time] === null) {
+          if (!sportsAdded) {
+            newTimetable[day][time] = 'Sports';
+            sportsAdded = true;
+          } else if (!Object.values(newTimetable[day]).includes('Library')) {
+            newTimetable[day][time] = 'Library';
+          } else {
+            newTimetable[day][time] = 'Tutorial';
+          }
+        }
+      });
+    });
+
     setTimetable(newTimetable);
   };
+
   const downloadTimetable = () => {
     const timetableElement = document.getElementById('timetable');
-    
-    // Use html2canvas to capture the timetable and create an image
+
     html2canvas(timetableElement).then(canvas => {
       const link = document.createElement('a');
       link.href = canvas.toDataURL('image/png');
-      link.download = 'timetable.png'; // The name of the downloaded file
+      link.download = 'timetable.png';
       link.click();
     });
   };
@@ -140,7 +153,7 @@ const TimeTable = () => {
       <button className="rules-button" onClick={() => setShowRules(!showRules)}>
         {showRules ? 'Hide Rules' : 'Show Rules'}
       </button>
-      
+
       {showRules && (
         <div className="rules-section">
           <h3>Rules for Entering the Details:</h3>
@@ -155,18 +168,18 @@ const TimeTable = () => {
           <option value="subject">Subject</option>
           <option value="lab">Lab</option>
         </select>
-        
+
         <label htmlFor="teacherName">Teacher Name:</label>
         <input type="text" id="teacherName" value={teacherName} onChange={(e) => setTeacherName(e.target.value)} />
-        
+
         <label htmlFor="subjects">Subjects (comma separated):</label>
         <input type="text" id="subjects" value={subjects} onChange={(e) => setSubjects(e.target.value)} />
-        
+
         {classType === 'lab' ? (
           <>
             <label htmlFor="labHours">Lab Hours (2 or 3):</label>
             <input type="number" id="labHours" value={labHours} onChange={(e) => setLabHours(e.target.value)} min="2" max="3" />
-            
+
             <label htmlFor="labDay">Lab Day:</label>
             <input type="text" id="labDay" value={labDay} onChange={(e) => setLabDay(e.target.value)} />
           </>
@@ -176,24 +189,24 @@ const TimeTable = () => {
             <input type="text" id="availability" value={availability} onChange={(e) => setAvailability(e.target.value)} />
           </>
         )}
-        
+
         <button onClick={addTeacher}>Add Teacher</button>
         <button onClick={clearForm}>Clear Form</button>
       </div>
-      
+
       <h3>Teachers List</h3>
       <ul>
         {teachers.map((teacher, index) => (
           <li key={index}>
-            {`${teacher.name} (Subjects: ${teacher.subjects.join(', ')}${teacher.classType === 'subject' ? `, Available: ${teacher.availability.join(', ')}` : ''}) ${teacher.classType === 'lab' ? `(Lab: ${teacher.labDetails.labHours} hours on ${teacher.labDetails.labDay})` : ''}`}
+            {`${teacher.name} (Subjects: ${teacher.subjects.join(', ')}${teacher.classType === 'subject' ? `, Available: ${teacher.availability.join(', ')}` : ''}${teacher.classType === 'lab' ? `, Lab: ${teacher.labDetails.labHours} hours on ${teacher.labDetails.labDay}` : ''})`}
             <button onClick={() => setTeachers(teachers.filter((_, i) => i !== index))}>Delete</button>
           </li>
         ))}
       </ul>
-      
+
       <button onClick={generateTimetable}>Generate Timetable</button>
       <button onClick={downloadTimetable}>Download Timetable as Image</button>
-      
+
       <table id="timetable">
         <thead>
           <tr>
@@ -212,7 +225,9 @@ const TimeTable = () => {
             <tr key={day}>
               <td>{day}</td>
               {Object.keys(timetable[day]).map(time => (
-                <td key={time}>{timetable[day][time] ? `${timetable[day][time].teacher} (${timetable[day][time].subject})` : ''}</td>
+                <td key={time} colSpan={timetable[day][time]?.colSpan || 1}>
+                  {timetable[day][time] === 'occupied' ? '' : timetable[day][time]?.teacher || timetable[day][time] || ''}
+                </td>
               ))}
             </tr>
           ))}
