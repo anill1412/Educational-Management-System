@@ -5,5 +5,4 @@ const TeacherComplain = () => {
     <div>TeacherComplain</div>
   )
 }
-
 export default TeacherComplain
