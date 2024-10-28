@@ -3,7 +3,7 @@ const router = require('express').Router();
 // const { adminRegister, adminLogIn, deleteAdmin, getAdminDetail, updateAdmin } = require('../controllers/admin-controller.js');
 
 const { adminRegister, adminLogIn, getAdminDetail} = require('../controllers/admin-controller.js');
-
+const {addTeacher,getAllTeachers,updateTeacher,deleteTeacher2 }= require('../controllers/teacher-pref-controller');
 const { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents } = require('../controllers/class-controller.js');
 const { complainCreate, complainList } = require('../controllers/complain-controller.js');
 const { noticeCreate, noticeList, deleteNotices, deleteNotice, updateNotice } = require('../controllers/notice-controller.js');
@@ -116,4 +116,9 @@ router.delete("/Subject/:id", deleteSubject)
 router.delete("/Subjects/:id", deleteSubjects)
 router.delete("/SubjectsClass/:id", deleteSubjectsByClass)
 
+//Preferences
+router.post('/add', addTeacher); // Add a teacher
+router.get('/api', getAllTeachers); // Get all teachers
+router.put('/teachers/:id', updateTeacher); // Update a teacher
+router.delete('/teachers/:id', deleteTeacher2); // Delete a teacher
 module.exports = router;
