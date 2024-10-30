@@ -12,19 +12,14 @@ import styled from 'styled-components';
 import Popup from '../../components/Popup';
 
 const defaultTheme = createTheme();
-
 const AdminRegisterPage = () => {
-
     const dispatch = useDispatch()
     const navigate = useNavigate()
-
     const { status, currentUser, response, error, currentRole } = useSelector(state => state.user);;
-
     const [toggle, setToggle] = useState(false)
     const [loader, setLoader] = useState(false)
     const [showPopup, setShowPopup] = useState(false);
     const [message, setMessage] = useState("");
-
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [adminNameError, setAdminNameError] = useState(false);
@@ -92,7 +87,7 @@ const AdminRegisterPage = () => {
                             Admin Register
                         </Typography>
                         <Typography variant="h7">
-                            Create your own school by registering as an admin.
+                            Create your own college by registering as an admin.
                             <br />
                             You will be able to add students and faculty and
                             manage the system.
@@ -116,11 +111,11 @@ const AdminRegisterPage = () => {
                                 required
                                 fullWidth
                                 id="schoolName"
-                                label="Create your school name"
+                                label="Create your college name"
                                 name="schoolName"
                                 autoComplete="off"
                                 error={schoolNameError}
-                                helperText={schoolNameError && 'School name is required'}
+                                helperText={schoolNameError && 'College name is required'}
                                 onChange={handleInputChange}
                             />
                             <TextField

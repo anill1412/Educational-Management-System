@@ -10,7 +10,7 @@ import {
 const REACT_APP_BASE_URL = "http://localhost:5000";
 export const getAllTeachers = (id) => async (dispatch) => {
     dispatch(getRequest());
-
+    
     try {
         const result = await axios.get(`${REACT_APP_BASE_URL}/Teachers/${id}`);
         if (result.data.message) {

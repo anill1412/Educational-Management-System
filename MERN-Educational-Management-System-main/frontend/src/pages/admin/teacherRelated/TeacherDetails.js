@@ -9,7 +9,7 @@ const TeacherDetails = () => {
     const params = useParams();
     const dispatch = useDispatch();
     const { loading, teacherDetails, error } = useSelector((state) => state.teacher);
-
+    
     const teacherID = params.id;
     
     useEffect(() => {

@@ -26,10 +26,10 @@ const ShowTeachers = () => {
     useEffect(() => {
         dispatch(getAllTeachers(currentUser._id));
     }, [currentUser._id, dispatch]);
-
+    
     const [showPopup, setShowPopup] = useState(false);
     const [message, setMessage] = useState("");
-
+    
     if (loading) {
         return <div>Loading...</div>;
     } else if (response) {
@@ -45,14 +45,14 @@ const ShowTeachers = () => {
     }
 
     const deleteHandler = (deleteID, address) => {
-        console.log(deleteID);
-        console.log(address);
-        setMessage("Sorry the delete function has been disabled for now.")
-        setShowPopup(true)
+        // console.log(deleteID);
+        // console.log(address);
+        // setMessage("Sorry the delete function has been disabled for now.")
+        // setShowPopup(true)
 
-        // dispatch(deleteUser(deleteID, address)).then(() => {
-        //     dispatch(getAllTeachers(currentUser._id));
-        // });
+        dispatch(deleteUser(deleteID, address)).then(() => {
+            dispatch(getAllTeachers(currentUser._id));
+        });
     };
 
     const columns = [
@@ -65,12 +65,12 @@ const ShowTeachers = () => {
         return {
             name: teacher.name,
             teachSubject: teacher.teachSubject?.subName || null,
-            teachSclass: teacher.teachSclass.sclassName,
-            teachSclassID: teacher.teachSclass._id,
+            teachSclass: teacher.teachSclass?.sclassName || 'No Class Assigned', // Add a fallback here
+            teachSclassID: teacher.teachSclass?._id,
             id: teacher._id,
         };
     });
-
+    
     const actions = [
         {
             icon: <PersonAddAlt1Icon color="primary" />, name: 'Add New Teacher',

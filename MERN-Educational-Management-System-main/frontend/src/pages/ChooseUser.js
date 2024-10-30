@@ -18,13 +18,13 @@ const ChooseUser = ({ visitor }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const password = "1234"
-
+  
   const { status, currentUser, currentRole } = useSelector(state => state.user);;
 
   const [loader, setLoader] = useState(false)
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
-
+  
   const navigateHandler = (user) => {
     if (user === "Admin") {
       if (visitor === "guest") {
